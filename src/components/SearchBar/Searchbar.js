@@ -1,6 +1,6 @@
-import React, { Component , useState } from 'react'
+import React, {  useState } from 'react'
 import { Input, Space } from 'antd'
-const Searchbar = () =>{
+const Searchbar = (props) =>{
     const [searchItem,setSearchItems] = useState('');
     // state = {
     //     searchItem: ''
@@ -13,7 +13,7 @@ const Searchbar = () =>{
     // }
     const handleSubmit = (event) => {
         // const { searchItem } = this.state;
-        const { onFormSubmit } = this.props;
+        const { onFormSubmit } = props;
         onFormSubmit(searchItem);
         event.preventDefault();
     }

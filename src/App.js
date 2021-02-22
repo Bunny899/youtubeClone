@@ -17,7 +17,7 @@ const App = () =>{
   // }
   useEffect(()=>{
     handleSubmit('javascript')
-  })
+  },[])
   
   const onVideoSelect = (video) => {
     // this.setState({selectedVideo:video});
