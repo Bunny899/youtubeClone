@@ -1,55 +1,60 @@
-import React , {useState,useEffect} from 'react';
-import './App.css';
+import React from 'react';
 import youtube from "./api/youtube";
 import { Row, Col } from 'antd';
 import { SearchBar, VideoList, VideoDetail } from "./components";
-const App = () =>{
-  // state = {
-  //   videos: [],
-  //   selectedVideo: null
-  // }
-  const [videos,setVideos] = useState([]);
-  const [selectedVideo,setSelectedVideo] = useState(null);
+import { showVideo } from "./redux/action";
+import { connect } from "react-redux";
+class App extends React.Component {
 
-  // componentDidMount()
-  // {
-  //   this.handleSubmit('javascript')
-  // }
-  useEffect(()=>{
-    handleSubmit('javascript')
-  },[])
-  
-  const onVideoSelect = (video) => {
-    // this.setState({selectedVideo:video});
-    setSelectedVideo(video);
+  state = {
+    selectedVideo: null
   }
-  const handleSubmit = async (searchItem) => {
+
+  componentDidMount() {
+    this.handleSubmit('javascript')
+  }
+
+  onVideoSelect = (video) => {
+    this.setState({ selectedVideo: video });
+  }
+  
+  handleSubmit = async (searchItem) => {
     const response = await youtube.get('search', {
       params: {
         part: 'snippet',
-        key: 'AIzaSyADuVxDDCu0laGkzBR61xDn-4Kf5vYT-mY',
-        q:searchItem
+        key: 'AIzaSyBan8u-be3yuIGlvo7yJhAxomx1pmutKcM',
+        q: searchItem
       }
     });
-    // this.setState({
-    //   videos: response.data.items,
-    //   selectedVideo: response.data.items[0]
-    // });
-    setVideos(response.data.items);
-    setSelectedVideo(response.data.items[0]);
+    const videoData = response.data.items;
+    this.props.showVideo(videoData)
+    this.setState({
+      selectedVideo: response.data.items[0]
+    });
   }
-    // const { selectedVideo,videos } = this.state;
+  render() {
+    const { selectedVideo } = this.state;
     return (
       <div className="App">
         <Row>
-          <Col span={24}><SearchBar onFormSubmit={handleSubmit} /></Col>
+          <Col span={24}><SearchBar onFormSubmit={this.handleSubmit} /></Col>
         </Row>
         <Row>
-          <Col span={16}><VideoDetail video={selectedVideo}/></Col>
-          <Col span={8}><VideoList videos={videos} onVideoSelect={onVideoSelect}/></Col>
+          <Col span={16}><VideoDetail video={selectedVideo} /></Col>
+          <Col span={8}><VideoList onVideoSelect={this.onVideoSelect} /></Col>
         </Row>
       </div>
     );
   }
-
-export default App;
+}
+const mapStateToProps = state => {
+  return {
+    videoList : state.data
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    showVideo: (videoData) => dispatch(showVideo(videoData))
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(App);

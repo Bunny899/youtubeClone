@@ -1,8 +1,10 @@
 import React from 'react'
 import VideoItem from "../VideoItem";
-
-function Videolist({videos, onVideoSelect}) {
-    const listOfVideos = videos.map((video,id) => <VideoItem onVideoSelect={onVideoSelect} key={id} video={video}/>)
+import { showVideo } from "../../redux/action";
+import { connect } from "react-redux";
+function Videolist(props) {
+    console.log(props)
+    const listOfVideos = props.videoList.map((video,id) => <VideoItem onVideoSelect={props.onVideoSelect} key={id} video={video}/>)
     return (
         <div>
             <h1>VideoList</h1>
@@ -10,5 +12,14 @@ function Videolist({videos, onVideoSelect}) {
         </div>
     );
 }
-
-export default Videolist
+const mapStateToProps = state => {
+    return {
+      videoList : state.data
+    }
+  }
+  const mapDispatchToProps = dispatch => {
+    return {
+      showVideo: (videoData) => dispatch(showVideo(videoData))
+    }
+  }
+  export default connect(mapStateToProps,mapDispatchToProps)(Videolist);
